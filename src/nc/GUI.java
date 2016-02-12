@@ -19,6 +19,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import im.irrational.GreedyPlayer;
+import im.irrational.IrrationalPlayer;
 import nc.player.HumanPlayer;
 import nc.player.IDDFSABPlayer;
 import nc.player.Player;
@@ -121,7 +123,28 @@ public final class GUI
                 game.setPlayer(new IDDFSABPlayer(game.getRandom(), game));
             }
         });
-        
+
+        final JMenuItem irrationalPlayer = new JMenuItem();
+        irrationalPlayer.setForeground(DEFAULT_TILE_TEXT_COLORS[0]);
+        irrationalPlayer.setText("Irrational");
+        irrationalPlayer.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.setPlayer(new IrrationalPlayer(game.getRandom(), game));
+            }
+        });
+
+        final JMenuItem greedyPlayer = new JMenuItem();
+        greedyPlayer.setForeground(DEFAULT_TILE_TEXT_COLORS[0]);
+        greedyPlayer.setText("Greedy");
+        greedyPlayer.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.setPlayer(new GreedyPlayer(game.getRandom(), game));
+            }
+        });
+
         final JMenu player = new JMenu();
         player.setForeground(DEFAULT_TILE_TEXT_COLORS[0]);
         player.setText("Player");
@@ -129,6 +152,8 @@ public final class GUI
         player.add(randomPlayer);
         player.add(humanPlayer);
         player.add(alphaBetaPlayer);
+        player.add(irrationalPlayer);
+        player.add(greedyPlayer);
         
         final JMenuItem exit = new JMenuItem();
         exit.setForeground(DEFAULT_TILE_TEXT_COLORS[0]);
