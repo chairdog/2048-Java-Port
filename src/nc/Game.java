@@ -1,8 +1,10 @@
 package nc;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 import nc.player.Player;
 
@@ -31,7 +33,9 @@ public final class Game
     private int game;
     private Player player;
     private Player currentPlayer;
-    
+    public File savePath;
+    private BufferedWriter saveFile;
+
     public Game(final Random random,
                 final int rows,
                 final int columns,
@@ -158,6 +162,21 @@ public final class Game
                 grid[row][column] = EMPTY;
             }
         }
+        saveFile = null;
+        if (savePath != null){
+            try {
+                String saveFilePath = savePath.getAbsolutePath()
+                        +File.separator
+                        + currentPlayer.getClass().getSimpleName()
+                        + String.valueOf(System.currentTimeMillis())
+                        +".log";
+                saveFile = new BufferedWriter(new FileWriter(saveFilePath));
+                System.out.println("Saving to "+saveFilePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
         score = 0;
         hasWon = null;
         addRandomTile(random, grid, probabilities[0]);
@@ -175,7 +194,29 @@ public final class Game
             }
             if (currentPlayer != null)
             {
-                score += move(grid, currentPlayer.getAction());
+                int action = currentPlayer.getAction();
+                if(saveFile!=null){
+                    try {
+                        saveFile.write(Arrays.deepToString(grid));
+                        saveFile.write(",");
+                        saveFile.write(Integer.toString(action));
+                        saveFile.write(",");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                score += move(grid, action);
+                if(saveFile!=null){
+                    try {
+                        saveFile.write(Arrays.deepToString(grid));
+                        saveFile.write(",");
+                        saveFile.write(Integer.toString(score));
+                        saveFile.newLine();
+                        saveFile.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if (score > bestScore)
                 {
                     bestScore = score;
@@ -190,6 +231,17 @@ public final class Game
                     hasWon = false;
                 }
             }
+        }
+        if(saveFile!=null){
+            try {
+                saveFile.write(Arrays.deepToString(this.getGrid()));
+                saveFile.write(",");
+                saveFile.write("Won="+hasWon.toString());
+                saveFile.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            saveFile=null;
         }
     }
     

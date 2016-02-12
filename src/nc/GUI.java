@@ -9,15 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.*;
 
 import im.irrational.GreedyPlayer;
 import im.irrational.IrrationalPlayer;
@@ -166,12 +158,38 @@ public final class GUI
                 System.exit(0);
             }
         });
-        
+
+        final JCheckBoxMenuItem saveLog = new JCheckBoxMenuItem();
+        saveLog.setForeground(DEFAULT_TILE_TEXT_COLORS[0]);
+        saveLog.setText("Save Log to ...");
+        final JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        saveLog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (saveLog.isSelected()) {
+                    int returnVal = fileChooser.showOpenDialog(saveLog);
+                    if(returnVal == JFileChooser.APPROVE_OPTION){
+                        game.savePath=fileChooser.getSelectedFile();
+                    }
+                    else{
+                        // fail to select the directory
+                        game.savePath=null;
+                        saveLog.setSelected(false);
+                    }
+                }
+                else{
+                    game.savePath=null;
+                }
+            }
+        });
+
         final JMenu file = new JMenu();
         file.setForeground(DEFAULT_TILE_TEXT_COLORS[0]);
         file.setText("File");
         file.add(restart);
         file.add(player);
+        file.add(saveLog);
         file.add(exit);
         
         final JLabel currentPlayerLabel = new JLabel("Player: ");
