@@ -1,10 +1,6 @@
 package nc;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -67,6 +63,8 @@ public final class GUI
                 game.reset();
             }
         });
+        // add shortcut
+        restart.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         
         final JMenuItem noPlayer = new JMenuItem();
         noPlayer.setForeground(DEFAULT_TILE_TEXT_COLORS[0]);
